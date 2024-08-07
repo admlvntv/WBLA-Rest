@@ -24,6 +24,7 @@ repositories {
 }
 
 dependencies {
+    // ktor
     implementation("io.ktor:ktor-server-core-jvm")
     implementation("io.ktor:ktor-server-auth-jvm")
     implementation("io.ktor:ktor-server-content-negotiation-jvm")
@@ -34,4 +35,6 @@ dependencies {
     implementation("ch.qos.logback:logback-classic:$logback_version")
     testImplementation("io.ktor:ktor-server-test-host-jvm")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
+
+    implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.0")
 }

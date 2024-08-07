@@ -1,6 +1,6 @@
 package com.example.model
 
-class CustomerLicense(
+data class CustomerLicense(
     val customerId: String,
     val licenses: List<License>
 )

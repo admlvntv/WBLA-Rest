@@ -6,5 +6,6 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class License(
     val id: String,
-    val expiration: Instant
+    val expiration: Instant,
+    val used: Boolean
 )

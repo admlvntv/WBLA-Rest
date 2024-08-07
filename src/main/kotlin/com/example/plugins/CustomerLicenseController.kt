@@ -21,7 +21,7 @@ fun Application.configureCustomerLicenseController() {
 
     routing {
         // get /{customerId} of media type JSON
-        get("/{customerId}") {
+        get("/license/{customerId}") {
                 val customerId: String = call.parameters["customerId"] ?: throw IllegalArgumentException("Invalid customer ID")
                 try {
                     val license = dbRepo.retrieveLicenses(customerId)

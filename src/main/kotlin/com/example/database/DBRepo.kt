@@ -71,15 +71,14 @@ class DBRepo(private val connection: Connection) {
     suspend fun retrieveLicenses(customerId: String): CustomerLicense = withContext(Dispatchers.IO) {
         val statement = connection.prepareStatement(RETRIEVE_CUSTOMER_LICENSES, Statement.RETURN_GENERATED_KEYS)
         statement.setString(1, customerId)
-        statement.executeUpdate()
-        val generatedKeys = statement.generatedKeys
+        val result = statement.executeQuery()
         val licenses = mutableListOf<License>()
-        while (generatedKeys.next()) {
+        while (result.next()) {
             licenses.add(License(
-                generatedKeys.getString("license_id"),
-                generatedKeys.getTimestamp("expires").toInstant().toKotlinInstant(),
-                generatedKeys.getBoolean("used")
-                ))
+                result.getString("license_id"),
+                result.getTimestamp("expires").toInstant().toKotlinInstant(),
+                result.getBoolean("used")
+            ))
         }
         return@withContext CustomerLicense(customerId, licenses)
     }

@@ -1,5 +1,8 @@
 @customerId = DEMO
-@licenseId = variable value
+@licenseId = help
+
+###
+GET http://localhost:8080/
 
 ###
 GET http://localhost:8080/devops/db
@@ -12,7 +15,7 @@ x-wbla-devops-api-key: SecurePassword!
 Authorization: Basic SecurePassword!
 
 ###
-GET http://localhost:8080/license/{{customerId}}
+GET http://localhost:8080/license/DEMO
 
 ###
 POST http://localhost:8080/license/{{licenseId}}/assign

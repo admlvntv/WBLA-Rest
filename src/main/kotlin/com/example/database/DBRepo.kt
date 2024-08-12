@@ -39,8 +39,7 @@ class DBRepo(private val connection: Connection) {
         val statement = connection.prepareStatement(ADD_CUSTOMER, Statement.RETURN_GENERATED_KEYS)
         statement.setString(1, customer.customerId)
         statement.setString(2, customer.customerName)
-        statement.executeUpdate()
-        val generatedKeys = statement.generatedKeys
+        val generatedKeys = statement.executeQuery()
         if (generatedKeys.next()) {
             return@withContext Customer(generatedKeys.getString("customer_id"), generatedKeys.getString("customer_name"))
         } else {
@@ -53,8 +52,7 @@ class DBRepo(private val connection: Connection) {
         statement.setString(1, customer.customerId)
         statement.setString(2, customer.customerName)
         statement.setString(3, customer.customerId)
-        statement.executeUpdate()
-        val generatedKeys = statement.generatedKeys
+        val generatedKeys = statement.executeQuery()
         if (generatedKeys.next()) {
             return@withContext Customer(generatedKeys.getString("customer_id"), generatedKeys.getString("customer_name"))
         } else {
@@ -71,8 +69,7 @@ class DBRepo(private val connection: Connection) {
     suspend fun retrieveLicenses(customerId: String): CustomerLicense = withContext(Dispatchers.IO) {
         val statement = connection.prepareStatement(RETRIEVE_CUSTOMER_LICENSES, Statement.RETURN_GENERATED_KEYS)
         statement.setString(1, customerId)
-        statement.executeUpdate()
-        val generatedKeys = statement.generatedKeys
+        val generatedKeys = statement.executeQuery()
         val licenses = mutableListOf<License>()
         while (generatedKeys.next()) {
             licenses.add(License(

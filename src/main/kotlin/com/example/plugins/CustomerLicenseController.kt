@@ -22,10 +22,8 @@ fun Application.configureCustomerLicenseController() {
     routing {
         get("/license/{customerId}") {
             val customerId: String = call.parameters["customerId"] ?: throw IllegalArgumentException("Invalid customer ID")
-            println("Received customerId: $customerId")
             try {
                 val license = dbRepo.retrieveLicenses(customerId)
-
                 // Check if the license list is empty
                 if (license.licenses.isNotEmpty()) {
                     call.respond(HttpStatusCode.OK, license)
@@ -52,8 +50,18 @@ fun Application.configureCustomerLicenseController() {
             try {
                 dbRepo.assignLicense(licenseId)
                 call.respond(HttpStatusCode.OK)
+            } catch (e: SQLException) {
+                // Handle database related exceptions separately
+                println("SQLException: ${e.message}")
+                call.respond(HttpStatusCode.InternalServerError, "Database error occurred")
+            } catch (e: IllegalArgumentException) {
+                // Handle IllegalArgumentException
+                println("IllegalArgumentException: ${e.message}")
+                call.respond(HttpStatusCode.BadRequest, "Invalid request")
             } catch (e: Exception) {
-                call.respond(HttpStatusCode.InternalServerError)
+                // Handle other exceptions
+                println("Exception: ${e.message}")
+                call.respond(HttpStatusCode.InternalServerError, "An unexpected error occurred")
             }
         }
 
@@ -62,8 +70,18 @@ fun Application.configureCustomerLicenseController() {
             try {
                 dbRepo.deleteLicense(licenseId)
                 call.respond(HttpStatusCode.OK)
+            } catch (e: SQLException) {
+                // Handle database related exceptions separately
+                println("SQLException: ${e.message}")
+                call.respond(HttpStatusCode.InternalServerError, "Database error occurred")
+            } catch (e: IllegalArgumentException) {
+                // Handle IllegalArgumentException
+                println("IllegalArgumentException: ${e.message}")
+                call.respond(HttpStatusCode.BadRequest, "Invalid request")
             } catch (e: Exception) {
-                call.respond(HttpStatusCode.InternalServerError)
+                // Handle other exceptions
+                println("Exception: ${e.message}")
+                call.respond(HttpStatusCode.InternalServerError, "An unexpected error occurred")
             }
         }
     }

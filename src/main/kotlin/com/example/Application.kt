@@ -14,4 +14,7 @@ fun Application.module() {
     configureRouting()
     configureSecurity()
     configureCustomerLicenseController()
+    configureDevicesController()
+    configureLicenseController()
+
 }

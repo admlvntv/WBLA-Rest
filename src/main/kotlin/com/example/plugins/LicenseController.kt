@@ -13,10 +13,6 @@ import kotlinx.coroutines.*
 
 fun Application.configureLicenseController() {
 
-    install(ContentNegotiation) {
-        json()
-    }
-
     routing {
 
     }

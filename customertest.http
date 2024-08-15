@@ -1,5 +1,5 @@
-@customerId = DEMO
-@licenseId = help
+@customerId = customer1
+@licenseId = license1
 
 ###
 GET http://localhost:8080/
@@ -24,3 +24,9 @@ Authorization: Basic userName SuperSecretPassword1234!!
 ###
 POST http://localhost:8080/license/{{licenseId}}/unassign
 Authorization: Basic userName SuperSecretPassword1234!!
+
+###
+POST http://localhost:8080/createDevice/{{customerId}}
+deviceName: device1
+deviceId: 1234567
+locationId: 123

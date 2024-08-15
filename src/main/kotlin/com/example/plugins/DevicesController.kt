@@ -43,6 +43,7 @@ object HttpClientSingleton {
 fun Application.configureDevicesController() {
 
     routing {
+        // Create device endpoint
         post("/createDevice/{customerId}") {
             val headers: Headers = call.request.headers
             val customerId: String = call.parameters["customerId"] ?: throw IllegalArgumentException("Invalid customer ID")
@@ -71,6 +72,14 @@ fun Application.configureDevicesController() {
             val customerId: String = call.parameters["customerId"] ?: throw IllegalArgumentException("Invalid customer ID")
             val deviceId: String = headers["deviceId"] ?: throw IllegalArgumentException("Invalid device ID")
             HttpClientSingleton.client.post("https://wbla-sandbox-rest.azurewebsites.net/license/${licenseId}/unassign")
+            call.respond(HttpStatusCode.OK, "Device $deviceId deleted for customer $customerId")
+        }
+
+        get("/getLicenses/{customerId}") {
+            val customerId: String = call.parameters["customerId"] ?: throw IllegalArgumentException("Invalid customer ID")
+            val licenses = extractLicenses(getLicenses(customerId))
+
+            call.respond(HttpStatusCode.OK, "License information for $customerId:\n${licenses.joinToString(separator = "\n") { it.id + "  Used:" + it.used }}")
         }
     }
 }

@@ -39,4 +39,3 @@ deviceId: 1234567
 
 ### Get licenses for a customer
 GET http://localhost:8080/getLicenses/{{customerId}}
-

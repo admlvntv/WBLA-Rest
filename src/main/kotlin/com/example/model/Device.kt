@@ -8,4 +8,3 @@ data class Device (
     val deviceName: String,
     val deviceId: String
 )
-

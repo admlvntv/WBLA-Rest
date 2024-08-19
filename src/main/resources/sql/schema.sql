@@ -32,6 +32,11 @@ $V1$
 
                 CONSTRAINT fk_license_id_customer_license FOREIGN KEY (license_id) REFERENCES customer_licenses(license_id) ON DELETE CASCADE
             );
+            CREATE TABLE IF NOT EXISTS device(
+                device_name text NOT NULL,
+                device_id text NOT NULL UNIQUE
+
+            );
             CREATE INDEX IF NOT EXISTS "idx-license_id-license" ON license("license_id");
 
             INSERT INTO version_history(version, description) VALUES (1, 'Init DB');

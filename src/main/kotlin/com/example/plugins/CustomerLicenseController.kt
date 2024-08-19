@@ -20,24 +20,48 @@ fun Application.configureCustomerLicenseController() {
     }
 
     routing {
-        // get /{customerId} of media type JSON
         get("/license/{customerId}") {
-                val customerId: String = call.parameters["customerId"] ?: throw IllegalArgumentException("Invalid customer ID")
-                try {
-                    val license = dbRepo.retrieveLicenses(customerId)
+            val customerId: String = call.parameters["customerId"] ?: throw IllegalArgumentException("Invalid customer ID")
+            try {
+                val license = dbRepo.retrieveLicenses(customerId)
+                // Check if the license list is empty
+                if (license.licenses.isNotEmpty()) {
                     call.respond(HttpStatusCode.OK, license)
-                } catch (e: Exception) {
-                    call.respond(HttpStatusCode.NotFound)
+                } else {
+                    call.respond(HttpStatusCode.NotFound, "No licenses found for customerId: $customerId")
                 }
+            } catch (e: SQLException) {
+                // Handle database related exceptions separately
+                println("SQLException: ${e.message}")
+                call.respond(HttpStatusCode.InternalServerError, "Database error occurred")
+            } catch (e: IllegalArgumentException) {
+                // Handle IllegalArgumentException
+                println("IllegalArgumentException: ${e.message}")
+                call.respond(HttpStatusCode.BadRequest, "Invalid request")
+            } catch (e: Exception) {
+                // Handle other exceptions
+                println("Exception: ${e.message}")
+                call.respond(HttpStatusCode.InternalServerError, "An unexpected error occurred")
             }
+        }
 
         post("/{licenseId}/assign") {
             val licenseId: String = call.parameters["licenseId"] ?: throw IllegalArgumentException("Invalid license ID")
             try {
                 dbRepo.assignLicense(licenseId)
                 call.respond(HttpStatusCode.OK)
+            } catch (e: SQLException) {
+                // Handle database related exceptions separately
+                println("SQLException: ${e.message}")
+                call.respond(HttpStatusCode.InternalServerError, "Database error occurred")
+            } catch (e: IllegalArgumentException) {
+                // Handle IllegalArgumentException
+                println("IllegalArgumentException: ${e.message}")
+                call.respond(HttpStatusCode.BadRequest, "Invalid request")
             } catch (e: Exception) {
-                call.respond(HttpStatusCode.InternalServerError)
+                // Handle other exceptions
+                println("Exception: ${e.message}")
+                call.respond(HttpStatusCode.InternalServerError, "An unexpected error occurred")
             }
         }
 
@@ -46,8 +70,18 @@ fun Application.configureCustomerLicenseController() {
             try {
                 dbRepo.deleteLicense(licenseId)
                 call.respond(HttpStatusCode.OK)
+            } catch (e: SQLException) {
+                // Handle database related exceptions separately
+                println("SQLException: ${e.message}")
+                call.respond(HttpStatusCode.InternalServerError, "Database error occurred")
+            } catch (e: IllegalArgumentException) {
+                // Handle IllegalArgumentException
+                println("IllegalArgumentException: ${e.message}")
+                call.respond(HttpStatusCode.BadRequest, "Invalid request")
             } catch (e: Exception) {
-                call.respond(HttpStatusCode.InternalServerError)
+                // Handle other exceptions
+                println("Exception: ${e.message}")
+                call.respond(HttpStatusCode.InternalServerError, "An unexpected error occurred")
             }
         }
     }

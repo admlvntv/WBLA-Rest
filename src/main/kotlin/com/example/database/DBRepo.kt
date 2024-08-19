@@ -99,8 +99,7 @@ class DBRepo(private val connection: Connection) {
         val statement = connection.prepareStatement(ADD_DEVICE, Statement.RETURN_GENERATED_KEYS)
         statement.setString(1, device.deviceId)
         statement.setString(2, device.deviceName)
-        statement.execute()
-        val generatedKeys = statement.generatedKeys
+        val generatedKeys = statement.executeQuery()
         if (generatedKeys.next()) {
             return@withContext Device(generatedKeys.getString("device_id"), generatedKeys.getString("device_name"))
         } else {

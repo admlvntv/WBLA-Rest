@@ -16,11 +16,14 @@ Authorization: Basic SecurePassword!
 
 ###
 GET http://localhost:8080/license/DEMO
+Authorization: Basic WBLA AVerySecurePassword
 
 ###
 POST http://localhost:8080/license/{{licenseId}}/assign
-Authorization: Basic userName SuperSecretPassword1234!!
+Authorization: Basic WBLA AVerySecurePassword
+//Authorization: Basic userName SuperSecretPassword1234!!
 
 ###
 POST http://localhost:8080/license/{{licenseId}}/unassign
-Authorization: Basic userName SuperSecretPassword1234!!
+Authorization: Basic WBLA AVerySecurePassword
+//Authorization: Basic userName SuperSecretPassword1234!!

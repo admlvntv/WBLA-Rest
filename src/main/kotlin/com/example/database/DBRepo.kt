@@ -2,6 +2,7 @@ package com.example.database
 
 import com.example.model.Customer
 import com.example.model.CustomerLicense
+import com.example.model.Device
 import com.example.model.License
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -32,7 +33,9 @@ class DBRepo(private val connection: Connection) {
         private const val SET_LICENSE_FALSE = """
                 UPDATE license SET used=false WHERE license_id=?;
                 """
-
+        private const val ADD_DEVICE = """""
+                INSERT INTO device(device_name, device_id) VALUES (?,?) RETURNING *;
+                """"
     }
 
     suspend fun addCustomer(customer: Customer): Customer = withContext(Dispatchers.IO) {
@@ -91,5 +94,16 @@ class DBRepo(private val connection: Connection) {
         val statement = connection.prepareStatement(SET_LICENSE_FALSE)
         statement.setString(1, licenseId)
         statement.execute()
+    }
+    suspend fun addDevice(device: Device): Device = withContext(Dispatchers.IO) {
+        val statement = connection.prepareStatement(ADD_DEVICE, Statement.RETURN_GENERATED_KEYS)
+        statement.setString(1, device.deviceId)
+        statement.setString(2, device.deviceName)
+        val generatedKeys = statement.executeQuery()
+        if (generatedKeys.next()) {
+            return@withContext Device(generatedKeys.getString("device_id"), generatedKeys.getString("device_name"))
+        } else {
+            throw Exception("Could not add device " + device.deviceId)
+        }
     }
 }

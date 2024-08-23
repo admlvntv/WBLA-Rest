@@ -1,5 +1,5 @@
 #@customerId = customer1
-@licenseId = license1
+@licenseId = license2
 
 ###
 GET http://localhost:8080/
@@ -26,11 +26,11 @@ POST http://localhost:8080/license/{{licenseId}}/unassign
 Authorization: Basic userName SuperSecretPassword1234!!
 
 ### Create a device for a customer
-@customerId = customer1
+@customerId = customer2
 POST http://localhost:8080/createDevice/{{customerId}}
 deviceName: device1
-deviceId: 1234567
-locationId: 123
+deviceId: aisdjfjsidf
+locationId: 123fasdfa
 
 ### Delete a device for a customer
 POST http://localhost:8080/deleteDevice/{{customerId}}

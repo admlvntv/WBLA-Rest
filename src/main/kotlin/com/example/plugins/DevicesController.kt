@@ -1,5 +1,7 @@
 package com.example.plugins
 
+import com.example.database.DBRepo
+import com.example.model.Device
 import io.ktor.client.*
 import io.ktor.http.*
 import kotlinx.serialization.json.*
@@ -12,6 +14,7 @@ import io.ktor.client.statement.*
 import io.ktor.client.engine.cio.*
 import io.ktor.client.plugins.auth.*
 import io.ktor.client.plugins.auth.providers.*
+import java.sql.Connection
 
 @Serializable
 data class LicenseResponse(val customerId: String, val licenses: List<License>)
@@ -41,6 +44,8 @@ object HttpClientSingleton {
 }
 
 fun Application.configureDevicesController() {
+    val dbConnection: Connection = connectToPostgres()
+    val dbRepo = DBRepo(dbConnection)
 
     routing {
         // Create device endpoint
@@ -58,7 +63,7 @@ fun Application.configureDevicesController() {
             if (unusedLicense != null) {
                 println("Unused License: $unusedLicense")
                 HttpClientSingleton.client.post("https://wbla-sandbox-rest.azurewebsites.net/license/${unusedLicense.id}/assign")
-                // set the license to used in DB
+                val device = dbRepo.addDevice(Device(deviceName, deviceId, locationId, customerId, unusedLicense.id))
                 call.respond(HttpStatusCode.OK, "Device created for customer $customerId with device name $deviceName, device ID $deviceId and location ID $locationId using license ${unusedLicense.id}")
             } else {
                 call.respond(HttpStatusCode.BadRequest, "All licenses are used or expired. Remove devices or purchase more licenses.")
@@ -85,7 +90,6 @@ fun Application.configureDevicesController() {
 }
 
 suspend fun getLicenses(customerId: String): String {
-    // Change later to not create client every time
 
     val response: HttpResponse = HttpClientSingleton.client.get("https://wbla-sandbox-rest.azurewebsites.net/license/$customerId")
 

@@ -6,6 +6,9 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class Device (
     val deviceName: String,
-    val deviceId: String
+    val deviceId: String,
+    val locationId: String,
+    val customerId: String,
+    val licenseId: String,
 )
 

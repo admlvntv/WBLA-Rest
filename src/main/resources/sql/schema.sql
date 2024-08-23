@@ -34,7 +34,10 @@ $V1$
             );
             CREATE TABLE IF NOT EXISTS device(
                 device_name text NOT NULL,
-                device_id text NOT NULL UNIQUE
+                device_id text NOT NULL UNIQUE,
+                location_id  text NOT NULL,
+                customer_id  text   NOT NULL,
+                license_id  text   NOT NULL UNIQUE
 
             );
             CREATE INDEX IF NOT EXISTS "idx-license_id-license" ON license("license_id");

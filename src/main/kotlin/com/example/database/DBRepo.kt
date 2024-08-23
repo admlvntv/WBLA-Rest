@@ -33,9 +33,9 @@ class DBRepo(private val connection: Connection) {
         private const val SET_LICENSE_FALSE = """
                 UPDATE license SET used=false WHERE license_id=?;
                 """
-        private const val ADD_DEVICE = """""
-                INSERT INTO device(device_name, device_id) VALUES (?,?) RETURNING *;
-                """"
+        private const val ADD_DEVICE = """
+                INSERT INTO device(device_name, device_id, location_id, customer_id, license_id) VALUES (?,?,?,?,?) RETURNING *;
+                """
     }
 
     suspend fun addCustomer(customer: Customer): Customer = withContext(Dispatchers.IO) {
@@ -97,11 +97,14 @@ class DBRepo(private val connection: Connection) {
     }
     suspend fun addDevice(device: Device): Device = withContext(Dispatchers.IO) {
         val statement = connection.prepareStatement(ADD_DEVICE, Statement.RETURN_GENERATED_KEYS)
-        statement.setString(1, device.deviceId)
-        statement.setString(2, device.deviceName)
+        statement.setString(1, device.deviceName)
+        statement.setString(2, device.deviceId)
+        statement.setString(3, device.locationId)
+        statement.setString(4, device.customerId)
+        statement.setString(5, device.licenseId)
         val generatedKeys = statement.executeQuery()
         if (generatedKeys.next()) {
-            return@withContext Device(generatedKeys.getString("device_id"), generatedKeys.getString("device_name"))
+            return@withContext Device(generatedKeys.getString("device_id"), generatedKeys.getString("device_name"), generatedKeys.getString("location_id"), generatedKeys.getString("customer_id"), generatedKeys.getString("license_id"))
         } else {
             throw Exception("Could not add device " + device.deviceId)
         }
